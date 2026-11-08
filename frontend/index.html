@@ -1,4 +1,3 @@
-<!-- Note: Fill API_ENDPOINT once API gateway is deployed -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -6,113 +5,409 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Signup</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Student Registration Portal</title>
+
+    <link
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
     <style>
-        /* Additional CSS styles can go here */
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 40px;
+        }
+
+        .section-card {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            height: 100%;
+        }
+
+        .status-message {
+            margin-top: 15px;
+        }
+
+        .pagination-controls {
+            margin-top: 15px;
+        }
     </style>
 </head>
 
 <body>
 
-    <div class="container mt-5">
-        <h1 class="text-center">Student Registration Portal</h1>
-        <br><br>
+    <div class="container">
+        <h1 class="text-center mb-4">Student Registration Portal</h1>
+
         <div class="row">
-            <div class="col-md-6">
-                <h3 class="text-center">Student Signup</h3>
-                <form id="studentSignupForm">
-                    <div class="form-group">
-                        <label for="name">Name:</label>
-                        <input type="text" class="form-control" id="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="age">Age:</label>
-                        <input type="number" class="form-control" id="age" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email:</label>
-                        <input type="email" class="form-control" id="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="country">Country:</label>
-                        <input type="text" class="form-control" id="country" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Signup</button>
-                </form>
+
+            <!-- Student Signup Section -->
+            <div class="col-md-6 mb-4">
+                <div class="section-card">
+
+                    <h3 class="text-center mb-4">Student Signup</h3>
+
+                    <form id="studentSignupForm">
+
+                        <div class="form-group">
+                            <label for="name">Name:</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="name"
+                                maxlength="100"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="age">Age:</label>
+                            <input
+                                type="number"
+                                class="form-control"
+                                id="age"
+                                min="1"
+                                max="120"
+                                step="1"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input
+                                type="email"
+                                class="form-control"
+                                id="email"
+                                maxlength="254"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="country">Country:</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="country"
+                                maxlength="100"
+                                required
+                            >
+                        </div>
+
+                        <button
+                            type="submit"
+                            id="signupBtn"
+                            class="btn btn-primary"
+                        >
+                            Signup
+                        </button>
+
+                    </form>
+
+                    <div
+                        id="signupMessage"
+                        class="status-message"
+                        role="status"
+                        aria-live="polite"
+                    ></div>
+
+                </div>
             </div>
-            <div class="col-md-6">
-                <h3 class="text-center">List Students</h3>
-                <table id="studentsTable" class="table table-bordered mt-3">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Age</th>
-                            <th>Email</th>
-                            <th>Country</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Rows will be dynamically populated here -->
-                    </tbody>
-                </table>
-                <button id="listStudentsBtn" class="btn btn-info">List Students</button>
+
+            <!-- Student Listing Section -->
+            <div class="col-md-6 mb-4">
+                <div class="section-card">
+
+                    <h3 class="text-center mb-4">List Students</h3>
+
+                    <div class="table-responsive">
+                        <table
+                            id="studentsTable"
+                            class="table table-bordered table-striped mt-3"
+                        >
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Age</th>
+                                    <th>Email</th>
+                                    <th>Country</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td colspan="4" class="text-center">
+                                        Select List Students to load records.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <button
+                        id="listStudentsBtn"
+                        class="btn btn-info"
+                        type="button"
+                    >
+                        List Students
+                    </button>
+
+                    <button
+                        id="loadMoreBtn"
+                        class="btn btn-secondary"
+                        type="button"
+                        disabled
+                    >
+                        Load More
+                    </button>
+
+                    <div
+                        id="listMessage"
+                        class="status-message"
+                        role="status"
+                        aria-live="polite"
+                    ></div>
+
+                </div>
             </div>
+
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        const API_ENDPOINT = ' https://rzdlez9fc5.execute-api.us-east-1.amazonaws.com/dev/student'; 
+        /*
+         * Configure this endpoint after API Gateway is deployed.
+         * Do not use an old or unverified API endpoint.
+         */
+        const API_ENDPOINT = "";
 
-        document.getElementById('studentSignupForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            let name = document.getElementById('name').value;
-            let age = document.getElementById('age').value;
-            let email = document.getElementById('email').value;
-            let country = document.getElementById('country').value;
+        const PAGE_SIZE = 10;
 
-            fetch(API_ENDPOINT, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ name, age, email, country })
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message || 'Student signed up successfully!');
-                // Clear the form
-                e.target.reset();
-            })
-            .catch(error => {
-                alert('Error: ' + error);
-            });
+        let nextToken = null;
+        let isLoadingStudents = false;
+
+        const signupForm = document.getElementById("studentSignupForm");
+        const signupButton = document.getElementById("signupBtn");
+        const signupMessage = document.getElementById("signupMessage");
+
+        const listStudentsButton = document.getElementById("listStudentsBtn");
+        const loadMoreButton = document.getElementById("loadMoreBtn");
+
+        const tableBody = document.querySelector("#studentsTable tbody");
+        const listMessage = document.getElementById("listMessage");
+
+
+        function getApiEndpoint() {
+            if (!API_ENDPOINT) {
+                throw new Error(
+                    "API endpoint is not configured. Configure API_ENDPOINT after API Gateway deployment."
+                );
+            }
+
+            return API_ENDPOINT;
+        }
+
+
+        async function parseResponse(response) {
+            let data;
+
+            try {
+                data = await response.json();
+            } catch (error) {
+                throw new Error("The server returned an invalid response.");
+            }
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message || `Request failed with status ${response.status}`
+                );
+            }
+
+            return data;
+        }
+
+
+        // Student Signup
+        signupForm.addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            signupMessage.textContent = "";
+
+            if (!signupForm.reportValidity()) {
+                return;
+            }
+
+            const name = document.getElementById("name").value.trim();
+            const age = Number(document.getElementById("age").value);
+            const email = document.getElementById("email").value.trim().toLowerCase();
+            const country = document.getElementById("country").value.trim();
+
+            if (
+                !Number.isInteger(age) ||
+                age < 1 ||
+                age > 120
+            ) {
+                signupMessage.textContent =
+                    "Age must be a whole number between 1 and 120.";
+                return;
+            }
+
+            const student = {
+                name,
+                age,
+                email,
+                country
+            };
+
+            signupButton.disabled = true;
+            signupButton.textContent = "Submitting...";
+
+            try {
+                const response = await fetch(getApiEndpoint(), {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(student)
+                });
+
+                const data = await parseResponse(response);
+
+                signupMessage.textContent =
+                    data.message || "Student registered successfully.";
+
+                signupMessage.className =
+                    "status-message text-success";
+
+                signupForm.reset();
+
+            } catch (error) {
+                signupMessage.textContent = error.message;
+                signupMessage.className =
+                    "status-message text-danger";
+
+            } finally {
+                signupButton.disabled = false;
+                signupButton.textContent = "Signup";
+            }
         });
 
-        document.getElementById('listStudentsBtn').addEventListener('click', function() {
-            fetch(API_ENDPOINT)
-            .then(response => response.json())
-            .then(students => {
-                let tableBody = document.querySelector('#studentsTable tbody');
-                tableBody.innerHTML = ''; // Clear existing rows
 
-                for (let student of students) {
-                    let row = tableBody.insertRow();
-                    row.insertCell().textContent = student.name;
-                    row.insertCell().textContent = student.age;
-                    row.insertCell().textContent = student.email;
-                    row.insertCell().textContent = student.country;
+        // Display student records in the table
+        function displayStudents(students) {
+            for (const student of students) {
+                const row = tableBody.insertRow();
+
+                row.insertCell().textContent = student.name;
+                row.insertCell().textContent = student.age;
+                row.insertCell().textContent = student.email;
+                row.insertCell().textContent = student.country;
+            }
+        }
+
+
+        // Retrieve student records from the API
+        async function loadStudents(loadMore = false) {
+            if (isLoadingStudents) {
+                return;
+            }
+
+            if (loadMore && !nextToken) {
+                return;
+            }
+
+            isLoadingStudents = true;
+
+            listStudentsButton.disabled = true;
+            loadMoreButton.disabled = true;
+
+            listMessage.textContent = "Loading students...";
+            listMessage.className = "status-message text-info";
+
+            if (!loadMore) {
+                tableBody.innerHTML = "";
+                nextToken = null;
+            }
+
+            try {
+                const parameters = new URLSearchParams({
+                    limit: String(PAGE_SIZE)
+                });
+
+                if (loadMore && nextToken) {
+                    parameters.set("nextToken", nextToken);
                 }
-            })
-            .catch(error => {
-                alert('Error fetching students: ' + error);
-            });
-        });
-    </script>
-</body>
 
+                const endpoint = getApiEndpoint();
+                const url = `${endpoint}?${parameters.toString()}`;
+
+                const response = await fetch(url);
+                const data = await parseResponse(response);
+
+                if (!Array.isArray(data.students)) {
+                    throw new Error(
+                        "Unexpected response format from the student API."
+                    );
+                }
+
+                if (data.students.length === 0 && !loadMore) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="4" class="text-center">
+                                No students found.
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    displayStudents(data.students);
+                }
+
+                nextToken = data.nextToken || null;
+
+                loadMoreButton.disabled = !nextToken;
+
+                if (nextToken) {
+                    listMessage.textContent =
+                        "More student records are available.";
+                } else {
+                    listMessage.textContent =
+                        "All available student records have been loaded.";
+                }
+
+                listMessage.className =
+                    "status-message text-success";
+
+            } catch (error) {
+                listMessage.textContent = error.message;
+                listMessage.className =
+                    "status-message text-danger";
+
+            } finally {
+                isLoadingStudents = false;
+                listStudentsButton.disabled = false;
+                loadMoreButton.disabled = !nextToken;
+            }
+        }
+
+
+        // Load the first page
+        listStudentsButton.addEventListener("click", function() {
+            loadStudents(false);
+        });
+
+
+        // Load subsequent pages
+        loadMoreButton.addEventListener("click", function() {
+            loadStudents(true);
+        });
+
+    </script>
+
+</body>
 </html>

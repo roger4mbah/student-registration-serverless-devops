@@ -1,0 +1,63 @@
+---
+name: Frontend Docker Security Scan
+
+"on":
+  push:
+    branches:
+      - main
+    paths:
+      - "frontend/**"
+      - ".github/workflows/frontend-security-scan.yml"
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "frontend/**"
+      - ".github/workflows/frontend-security-scan.yml"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  frontend-security-scan:
+    name: Build and Scan Frontend Image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --pull \
+            -t student-registration-frontend:ci \
+            ./frontend
+
+      - name: Install Trivy
+        uses: aquasecurity/setup-trivy@e07451d2e059ed86c2870430ea286b3a9e0bf241
+        with:
+          version: v0.76.2
+      - name: Scan Docker image
+        run: |
+          mkdir -p security-reports
+
+          trivy image \
+            --scanners vuln \
+            --severity HIGH,CRITICAL \
+            --exit-code 1 \
+            --format json \
+            --output security-reports/frontend-image-scan.json \
+            student-registration-frontend:ci
+
+      - name: Upload Trivy scan report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-trivy-security-report
+          path: security-reports/frontend-image-scan.json
+          if-no-files-found: warn
+          retention-days: 30
