@@ -1,0 +1,82 @@
+---
+name: Helm Chart Validation
+
+"on":
+  push:
+    branches:
+      - main
+    paths:
+      - "helm/**"
+      - "k8s/**"
+      - ".github/workflows/helm-validation.yml"
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "helm/**"
+      - "k8s/**"
+      - ".github/workflows/helm-validation.yml"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  helm-validation:
+    name: Lint and Validate Helm Chart
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.22.1
+
+      - name: Check Helm version
+        run: helm version
+
+      - name: Lint Helm chart
+        run: |
+          helm lint helm/student-registration-frontend
+
+      - name: Validate development configuration
+        run: |
+          helm template frontend-dev \
+            helm/student-registration-frontend \
+            -f helm/student-registration-frontend/environments/dev.yaml \
+            > /tmp/frontend-dev-rendered.yaml
+
+      - name: Validate staging configuration
+        run: |
+          helm template frontend-staging \
+            helm/student-registration-frontend \
+            -f helm/student-registration-frontend/environments/staging.yaml \
+            > /tmp/frontend-staging-rendered.yaml
+
+      - name: Validate production configuration
+        run: |
+          helm template frontend-prod \
+            helm/student-registration-frontend \
+            -f helm/student-registration-frontend/environments/prod.yaml \
+            > /tmp/frontend-prod-rendered.yaml
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+
+      - name: Install Kubeconform
+        run: |
+          go install github.com/yannh/kubeconform/cmd/kubeconform@v0.6.7
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+
+      - name: Validate Kubernetes manifests
+        run: |
+          kubeconform -strict -summary /tmp/frontend-dev-rendered.yaml
+          kubeconform -strict -summary /tmp/frontend-staging-rendered.yaml
+          kubeconform -strict -summary /tmp/frontend-prod-rendered.yaml
