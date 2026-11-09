@@ -1,0 +1,67 @@
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: student-registration-frontend
+  namespace: default
+  labels:
+    app: student-registration-frontend
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: student-registration-frontend
+
+  template:
+    metadata:
+      labels:
+        app: student-registration-frontend
+
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 101
+        seccompProfile:
+          type: RuntimeDefault
+
+      containers:
+        - name: frontend
+          image: student-registration-frontend:dev-hardened-v2
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 20
+
