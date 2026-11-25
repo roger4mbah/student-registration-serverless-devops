@@ -19,6 +19,7 @@ spec:
     metadata:
       labels:
         app: student-registration-frontend
+        app.kubernetes.io/instance: student-registration-frontend
 
     spec:
       securityContext:

@@ -43,7 +43,6 @@
 
     <div class="container">
         <h1 class="text-center mb-4">Student Registration Portal</h1>
-
         <div class="row">
 
             <!-- Student Signup Section -->
@@ -179,13 +178,12 @@
 
         </div>
     </div>
-
     <script>
         /*
          * Configure this endpoint after API Gateway is deployed.
          * Do not use an old or unverified API endpoint.
          */
-        const API_ENDPOINT = "";
+	const API_ENDPOINT = "";
 
         const PAGE_SIZE = 10;
 
@@ -210,9 +208,8 @@
                 );
             }
 
-            return API_ENDPOINT;
-        }
-
+            return `${API_ENDPOINT}/students`;
+           }
 
         async function parseResponse(response) {
             let data;
