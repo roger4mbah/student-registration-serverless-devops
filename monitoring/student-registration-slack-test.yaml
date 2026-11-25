@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: student-registration-slack-test
+  namespace: monitoring
+  labels:
+    release: monitoring
+spec:
+  groups:
+    - name: student-registration-slack-test
+      rules:
+        - alert: StudentRegistrationCriticalSlackTest
+          expr: vector(1)
+          for: 0s
+          labels:
+            severity: critical
+            app: student-registration-frontend
+          annotations:
+            summary: "Student Registration critical Slack test"
+            description: "Testing critical alert delivery to Slack. This is a temporary test, not an application outage."

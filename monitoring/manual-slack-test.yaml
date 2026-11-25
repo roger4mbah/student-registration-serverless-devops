@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: manual-slack-test
+  namespace: monitoring
+  labels:
+    release: monitoring
+spec:
+  groups:
+    - name: manual-slack-test
+      rules:
+        - alert: ManualSlackTest
+          expr: vector(1)
+          for: 0s
+          labels:
+            severity: warning
+          annotations:
+            summary: "Manual Slack notification test"
+            description: "Testing the Prometheus to Alertmanager to Slack pipeline."

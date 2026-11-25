@@ -1,0 +1,29 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: student-registration-alerts
+  namespace: monitoring
+  labels:
+    release: monitoring
+spec:
+  groups:
+    - name: student-registration.application
+      rules:
+        - alert: StudentRegistrationFrontendDown
+          expr: |
+            kube_deployment_spec_replicas{
+              namespace="default",
+              deployment="student-registration-frontend"
+            } > 0
+            and
+            kube_deployment_status_replicas_available{
+              namespace="default",
+              deployment="student-registration-frontend"
+            } == 0
+          for: 2m
+          labels:
+            severity: critical
+            app: student-registration-frontend
+          annotations:
+            summary: "Student Registration Frontend is unavailable"
+            description: "The student-registration-frontend Deployment has zero available replicas while expecting at least one. Check the Deployment, pods, and recent events."
